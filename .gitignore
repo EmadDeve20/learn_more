@@ -1,3 +1,9 @@
+# programing languages file
+programing_languages
+
+# vscode
+.vscode
+
 # Prerequisites
 *.d
 
