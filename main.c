@@ -33,6 +33,7 @@ int main(int argc, char *argv[])
     int opt;
     int file_name_customized = 0;
     char file_name[100];
+    char buffer[BUFFER_SIZE] = {"\0"};
 
     while ((opt = getopt(argc, argv, "f:")) != -1) {
         switch (opt) {
