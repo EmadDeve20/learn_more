@@ -5,7 +5,7 @@
 #include <regex.h>
 
 #define BUFFER_SIZE 1024
-#define EXAMPLE_FILE "programing_languages.example"
+#define EXAMPLE_FILE "programing_languages"
 #define EXAMPLE_FILE_SIZE strlen(EXAMPLE_FILE)+1
 #define NORLAL_REGEX_PATTERN "^[a-zA-Z]+.* \\[]$"
 #define PASSED_REGEX_PATTERN "^[a-zA-Z]+.* \\[(x|X)]$"
