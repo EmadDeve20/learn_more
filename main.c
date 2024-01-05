@@ -7,40 +7,43 @@
 #define BUFFER_SIZE 1024
 #define EXAMPLE_FILE "programing_languages.example"
 #define EXAMPLE_FILE_SIZE strlen(EXAMPLE_FILE)+1
-#define REGEX_PATTERN "^[a-zA-Z]+.* \\[]$"
+#define NORLAL_REGEX_PATTERN "^[a-zA-Z]+.* \\[]$"
+#define PASSED_REGEX_PATTERN "^[a-zA-Z]+.* \\[(x|X)]$"
 #define True 1
 #define False 0
 
 
 int check_line_format(const char *slice_str)
 {   
-    regex_t reegex;
+    regex_t reg_normal, reg_passed;
     char cp_slice_str[BUFFER_SIZE] = {"\0"};
-    int check;
+    int check_normal, check_passed;
 
     strncat(cp_slice_str, slice_str, strlen(slice_str));
     cp_slice_str[strlen(cp_slice_str) - 1] = '\0';
 
-    check = regcomp(&reegex, REGEX_PATTERN, REG_EXTENDED);
+    check_normal = regcomp(&reg_normal, NORLAL_REGEX_PATTERN, REG_EXTENDED);
+    check_passed = regcomp(&reg_passed, PASSED_REGEX_PATTERN, REG_EXTENDED);
 
-    if (check)
+    if (check_normal || check_passed)
     {   
         printf("Could not compile regex\n");
         return False;
     }
 
-    check = regexec(&reegex, cp_slice_str, 0, NULL, 0);
+    check_normal = regexec(&reg_normal, cp_slice_str, 0, NULL, 0);
+    check_passed = regexec(&reg_passed, cp_slice_str, 0, NULL, 0);
 
 
-    if (check == 0)
+    if (check_normal == 0)
     {
-        // Regex Match
+        // Regex Normal Match
         return True;
     }
-    else if (check == REG_NOMATCH)
+    else if (check_passed == 0)
     {
-        // No match found
-        return False;
+        // Regex Passed Match
+        return 2;
     }
     else
     {
@@ -65,6 +68,12 @@ int read_file(char *buffer, char *file_name, char *error_line_text, int *error_l
 
     while (fgets(line_text, sizeof(line_text), file))
     {   
+        if (check_line_format(line_text) == 2)
+        {
+            line_number++;
+            continue;
+        }
+
         if (!check_line_format(line_text))
         {
             strncat(error_line_text, line_text, strlen(line_text));
