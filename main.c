@@ -159,7 +159,7 @@ int main(int argc, char *argv[])
     }
 
 
-    if (read_file(buffer, EXAMPLE_FILE, error_line_text, &error_line_number) == 0)
+    if (read_file(buffer, file_name, error_line_text, &error_line_number) == 0)
     {
         printf("Got Error To Open %s File!\n", file_name);
         printf("error in line %d: %sinvalid text format!\n", error_line_number, error_line_text);
