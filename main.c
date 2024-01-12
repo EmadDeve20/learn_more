@@ -102,7 +102,7 @@ int write_in_file(char *file_name)
 
     fseek(file, 2, SEEK_SET);
 
-    fprintf(file, "[x");
+    fputs("x", file);
 
     fclose(file);
 }
