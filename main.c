@@ -93,6 +93,21 @@ int read_file(char *buffer, char *file_name, char *error_line_text, int *error_l
 }
 
 
+// TODO: Complete this Function to edit file
+int write_in_file(char *file_name)
+{
+    FILE *file;
+
+    file = fopen(file_name, "r+");
+
+    fseek(file, 2, SEEK_SET);
+
+    fprintf(file, "[x");
+
+    fclose(file);
+}
+
+
 int main(int argc, char *argv[])
 {   
     int opt;
