@@ -3,8 +3,10 @@
 #include <unistd.h>
 #include <string.h>
 #include <regex.h>
+#include <stdlib.h>
 
 #define BUFFER_SIZE 1024
+#define MAX_BUFFER_ARRAY_SIZE 100
 #define EXAMPLE_FILE "programing_languages"
 #define EXAMPLE_FILE_SIZE strlen(EXAMPLE_FILE)+1
 #define NORLAL_REGEX_PATTERN "^[a-zA-Z]+.* \\[]$"
@@ -93,6 +95,28 @@ int read_file(char *buffer, char *file_name, char *error_line_text, int *error_l
 }
 
 
+void get_todo_list(const char *buffer, char list[MAX_BUFFER_ARRAY_SIZE][BUFFER_SIZE])
+{
+    char cp_buffer[BUFFER_SIZE] = {0};
+    int list_index = 0;
+
+    strncat(cp_buffer, buffer, strlen(buffer));
+
+    char *token = strtok(cp_buffer, "\n");
+    char todo[BUFFER_SIZE] = {0};
+
+    while (token != NULL)
+    {   
+        for (int i = 0; token[i] != ' '; i++)
+        {   
+            todo[i] = token[i];
+        }
+        strncpy(list[list_index++], todo, strlen(todo));
+        memset(todo, '\0', BUFFER_SIZE);
+        token = strtok(NULL, "\n");        
+    }
+}
+
 // TODO: Complete this Function to edit file
 int write_in_file(char *file_name)
 {
@@ -116,6 +140,7 @@ int main(int argc, char *argv[])
     char buffer[BUFFER_SIZE] = {"\0"};
     int error_line_number = 0;
     char error_line_text[BUFFER_SIZE] = {"\0"};
+    char todo_list[MAX_BUFFER_ARRAY_SIZE][BUFFER_SIZE];
 
     while ((opt = getopt(argc, argv, "f:")) != -1) {
         switch (opt) {
@@ -140,6 +165,8 @@ int main(int argc, char *argv[])
         printf("error in line %d: %sinvalid text format!\n", error_line_number, error_line_text);
         return 1;
     }
+
+    get_todo_list(buffer, todo_list);
 
     printf("%s\n", buffer);
     // return True;
