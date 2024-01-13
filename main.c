@@ -55,11 +55,11 @@ int check_line_format(const char *slice_str)
 }
 
 
-int read_file(char *buffer, char *file_name, char *error_line_text, int *error_line_number)
+int read_file(char *buffer, char *file_name, char *error_line_text, int *line_number)
 {
     FILE *file;
     char line_text[BUFFER_SIZE] = {"\0"};
-    int line_number = 1;
+    int line = 1;
 
     file = fopen(file_name, "r");
 
@@ -72,22 +72,22 @@ int read_file(char *buffer, char *file_name, char *error_line_text, int *error_l
     {   
         if (check_line_format(line_text) == 2)
         {
-            line_number++;
             continue;
         }
-
         if (!check_line_format(line_text))
         {
             strncat(error_line_text, line_text, strlen(line_text));
-            *error_line_number = line_number;
+            *line_number = line;
             return False;
         }
         else
         {
             strncat(buffer, line_text, strlen(line_text));
-            line_number++;
         }
+        line++;
     }
+
+    *line_number = line-1;
 
     fclose(file);
 
@@ -138,7 +138,7 @@ int main(int argc, char *argv[])
     int file_name_customized = 0;
     char file_name[100];
     char buffer[BUFFER_SIZE] = {"\0"};
-    int error_line_number = 0;
+    int line_number = 0;
     char error_line_text[BUFFER_SIZE] = {"\0"};
     char todo_list[MAX_BUFFER_ARRAY_SIZE][BUFFER_SIZE];
 
@@ -159,10 +159,10 @@ int main(int argc, char *argv[])
     }
 
 
-    if (read_file(buffer, file_name, error_line_text, &error_line_number) == 0)
+    if (read_file(buffer, file_name, error_line_text, &line_number) == 0)
     {
         printf("Got Error To Open %s File!\n", file_name);
-        printf("error in line %d: %sinvalid text format!\n", error_line_number, error_line_text);
+        printf("error in line %d: %sinvalid text format!\n", line_number, error_line_text);
         return 1;
     }
 
