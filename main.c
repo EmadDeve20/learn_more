@@ -4,6 +4,7 @@
 #include <string.h>
 #include <regex.h>
 #include <stdlib.h>
+#include <time.h>
 
 #define BUFFER_SIZE 1024
 #define MAX_BUFFER_ARRAY_SIZE 100
@@ -87,7 +88,7 @@ int read_file(char *buffer, char *file_name, char *error_line_text, int *line_nu
         line++;
     }
 
-    *line_number = line-1;
+    *line_number = line;
 
     fclose(file);
 
@@ -117,6 +118,11 @@ void get_todo_list(const char *buffer, char list[MAX_BUFFER_ARRAY_SIZE][BUFFER_S
     }
 }
 
+int generate_random_todo(int *line)
+{
+    return rand() % *line;
+} 
+
 // TODO: Complete this Function to edit file
 int write_in_file(char *file_name)
 {
@@ -132,8 +138,26 @@ int write_in_file(char *file_name)
 }
 
 
+void init_menu(char todo_list[MAX_BUFFER_ARRAY_SIZE][BUFFER_SIZE], int *line_number)
+{   
+    int random_n, prev_random;
+    char select_char;
+    while (True)
+    {
+        random_n = generate_random_todo(line_number);
+
+        if (random_n != 0) random_n--;
+
+        printf("%s selected! if you have done this please item Enter (d or D) if you want to reload enter (r or R)!\n", todo_list[random_n]);
+        scanf("%c", &select_char);
+        printf("%c\n", select_char);
+    }
+}
+
 int main(int argc, char *argv[])
 {   
+    srand(time(0));
+
     int opt;
     int file_name_customized = 0;
     char file_name[100];
@@ -168,7 +192,6 @@ int main(int argc, char *argv[])
 
     get_todo_list(buffer, todo_list);
 
-    printf("%s\n", buffer);
-    // return True;
+    init_menu(todo_list, &line_number);
 
 }
