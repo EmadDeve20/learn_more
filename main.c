@@ -5,6 +5,7 @@
 #include <regex.h>
 #include <stdlib.h>
 #include <time.h>
+#include <ctype.h>
 
 #define BUFFER_SIZE 1024
 #define MAX_BUFFER_ARRAY_SIZE 100
@@ -14,6 +15,9 @@
 #define PASSED_REGEX_PATTERN "^[a-zA-Z]+.* \\[(x|X)]$"
 #define True 1
 #define False 0
+#define EXIT_CHARACTER 'Q'
+#define DONE_CHARACTER 'D'
+#define RELOAD_CHARACTER 'R'
 
 
 int check_line_format(const char *slice_str)
@@ -138,20 +142,57 @@ int write_in_file(char *file_name)
 }
 
 
+void remove_item_in_todo_list(char todo_list[MAX_BUFFER_ARRAY_SIZE][BUFFER_SIZE], int *line_number)
+{
+    // Comple This function plase :D
+}
+
 void init_menu(char todo_list[MAX_BUFFER_ARRAY_SIZE][BUFFER_SIZE], int *line_number)
 {   
     int random_n, prev_random;
     char select_char;
-    while (True)
+    
+    random_n = generate_random_todo(line_number);
+
+    if (random_n != 0) random_n--;
+
+    prev_random = random_n;
+
+    printf("if you want to exit enter (Q or q)\n");
+    printf("%s selected! if you have done this item please Enter (d or D) if you want to reload enter (r or R)!\n", todo_list[random_n]);
+    
+    do
     {
-        random_n = generate_random_todo(line_number);
-
-        if (random_n != 0) random_n--;
-
-        printf("%s selected! if you have done this please item Enter (d or D) if you want to reload enter (r or R)!\n", todo_list[random_n]);
         scanf("%c", &select_char);
-        printf("%c\n", select_char);
-    }
+
+        select_char = toupper(select_char);
+
+        switch (select_char)
+        {
+            case DONE_CHARACTER:
+                printf("%s Done!\n", todo_list[random_n]);
+                break;
+            
+            case RELOAD_CHARACTER:
+                do {
+                    random_n = generate_random_todo(line_number);
+                    if (random_n != 0) random_n--;
+                }
+                while (random_n == prev_random && *line_number > 1);
+
+                prev_random = random_n;
+                printf("%s selected! if you have done this item please Enter (d or D) if you want to reload enter (r or R)!\n", todo_list[random_n]);
+                break;
+
+            case EXIT_CHARACTER:
+                return;
+
+            default:
+                break;
+        }
+
+    } while (True);
+    
 }
 
 int main(int argc, char *argv[])
