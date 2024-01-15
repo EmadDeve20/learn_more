@@ -92,7 +92,8 @@ int read_file(char *buffer, char *file_name, char *error_line_text, int *line_nu
         line++;
     }
 
-    *line_number = line;
+    // TODO: find a solution to handle this line number better than this shit!
+    *line_number = line-2;
 
     fclose(file);
 
@@ -142,9 +143,26 @@ int write_in_file(char *file_name)
 }
 
 
-void remove_item_in_todo_list(char todo_list[MAX_BUFFER_ARRAY_SIZE][BUFFER_SIZE], int *line_number)
-{
-    // Comple This function plase :D
+void remove_item_in_todo_list(int index, char todo_list[MAX_BUFFER_ARRAY_SIZE][BUFFER_SIZE], int *line_number)
+{   
+    if (index != *line_number)
+    {   
+        for (int i = 0; i < *line_number; i++)
+        {
+            if (i == index)
+            {
+                memset(todo_list[index], '\0', strlen(todo_list[index]));
+                strncat(todo_list[index], todo_list[index+1], strlen(todo_list[index+1]));
+                index++;
+            }
+        }
+    }
+    else
+    {
+        memset(todo_list[index], '\0', strlen(todo_list[index]));
+    }
+
+    *line_number -= 1;
 }
 
 void init_menu(char todo_list[MAX_BUFFER_ARRAY_SIZE][BUFFER_SIZE], int *line_number)
@@ -153,8 +171,6 @@ void init_menu(char todo_list[MAX_BUFFER_ARRAY_SIZE][BUFFER_SIZE], int *line_num
     char select_char;
     
     random_n = generate_random_todo(line_number);
-
-    if (random_n != 0) random_n--;
 
     prev_random = random_n;
 
@@ -171,12 +187,12 @@ void init_menu(char todo_list[MAX_BUFFER_ARRAY_SIZE][BUFFER_SIZE], int *line_num
         {
             case DONE_CHARACTER:
                 printf("%s Done!\n", todo_list[random_n]);
+                remove_item_in_todo_list(random_n, todo_list, line_number);
                 break;
             
             case RELOAD_CHARACTER:
                 do {
                     random_n = generate_random_todo(line_number);
-                    if (random_n != 0) random_n--;
                 }
                 while (random_n == prev_random && *line_number > 1);
 
@@ -191,7 +207,7 @@ void init_menu(char todo_list[MAX_BUFFER_ARRAY_SIZE][BUFFER_SIZE], int *line_num
                 break;
         }
 
-    } while (True);
+    } while (*line_number >= 0);
     
 }
 
