@@ -13,6 +13,7 @@
 #define EXAMPLE_FILE_SIZE strlen(EXAMPLE_FILE)+1
 #define NORLAL_REGEX_PATTERN "^[a-zA-Z]+.* \\[]$"
 #define PASSED_REGEX_PATTERN "^[a-zA-Z]+.* \\[(x|X)]$"
+#define COMMENT_REGEX_PATTERN "^#.*"
 #define True 1
 #define False 0
 #define EXIT_CHARACTER 'Q'
@@ -22,17 +23,18 @@
 
 int check_line_format(const char *slice_str)
 {   
-    regex_t reg_normal, reg_passed;
+    regex_t reg_normal, reg_passed, reg_comment;
     char cp_slice_str[BUFFER_SIZE] = {"\0"};
-    int check_normal, check_passed;
+    int check_normal, check_passed, check_comment;
 
     strncat(cp_slice_str, slice_str, strlen(slice_str));
     cp_slice_str[strlen(cp_slice_str) - 1] = '\0';
 
     check_normal = regcomp(&reg_normal, NORLAL_REGEX_PATTERN, REG_EXTENDED);
     check_passed = regcomp(&reg_passed, PASSED_REGEX_PATTERN, REG_EXTENDED);
+    check_comment = regcomp(&reg_comment, COMMENT_REGEX_PATTERN, REG_EXTENDED);
 
-    if (check_normal || check_passed)
+    if (check_normal || check_passed || check_comment)
     {   
         printf("Could not compile regex\n");
         return False;
@@ -40,6 +42,7 @@ int check_line_format(const char *slice_str)
 
     check_normal = regexec(&reg_normal, cp_slice_str, 0, NULL, 0);
     check_passed = regexec(&reg_passed, cp_slice_str, 0, NULL, 0);
+    check_comment = regexec(&reg_comment, cp_slice_str, 0, NULL, 0);
 
 
     if (check_normal == 0)
@@ -47,7 +50,7 @@ int check_line_format(const char *slice_str)
         // Regex Normal Match
         return True;
     }
-    else if (check_passed == 0)
+    else if (check_passed == 0 || check_comment == 0)
     {
         // Regex Passed Match
         return 2;
