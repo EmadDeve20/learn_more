@@ -191,7 +191,6 @@ void init_menu(char todo_list[MAX_BUFFER_ARRAY_SIZE][BUFFER_SIZE], int *line_num
             case DONE_CHARACTER:
                 printf("%s Done!\n", todo_list[random_n]);
                 remove_item_in_todo_list(random_n, todo_list, line_number);
-                break;
             
             case RELOAD_CHARACTER:
                 do {
